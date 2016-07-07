@@ -105,13 +105,13 @@ class ParallelWebRequester implements WebRequesterContract
         $this->responses = $responses;
       }
       public function offsetExists($offset) {
-        return array_key_exists($this->responses);
+        return array_key_exists($offset, $this->responses);
       }
       public function offsetGet($offset) {
         return $this->responses[$offset];
       }
-      public function offsetSet($offset) {
-        $this->responses[$offset];
+      public function offsetSet($offset, $newVal) {
+        $this->responses[$offset] = $newVal;
       }
       public function offsetUnset($offset) {
         unset($this->responses[$offset]);
