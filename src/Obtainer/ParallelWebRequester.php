@@ -6,7 +6,6 @@ use \InvalidArgumentException;
 use \LogicException;
 use \ArrayAccess;
 use \ReflectionFunction;
-use \WikiLeaksEmailDump\Obtainer\WebRequesterContract;
 
 /**
 * Fires Parallel Web Requests
