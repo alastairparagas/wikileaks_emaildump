@@ -1,0 +1,14 @@
+{
+    "name": "aparagas/wikileaks_emaildump",
+    "description": "Obtains, parses and runs statistics on the Wikileaks email dump of President Hillary Clinton",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alastair Paragas",
+            "email": "alastairparagas@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
