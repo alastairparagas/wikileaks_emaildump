@@ -5,7 +5,7 @@ namespace WikiLeaksEmailDump\Obtainer;
 use \InvalidArgumentException; 
 use \LogicException;
 use \ArrayAccess;
-use \ReflectionFunction;
+use \Generator;
 
 /**
 * Fires Parallel Web Requests
@@ -38,16 +38,11 @@ class ParallelWebRequester implements WebRequesterContract
   
   /**
   * Constructs ParallelWebRequester from a generator
-  * @param Closure $generator
+  * @param Generator $generator
   */
-  public static function fromGenerator(Closure $generator) 
+  public static function fromGenerator(Generator $generator) 
   {
     $urlList = [];
-    
-    if (!((new ReflectionFunction($generator))->isGenerator())) {
-      throw new InvalidArgumentException("generator must be a " . 
-                                         "generator function");
-    }
     
     foreach ($generator() as $url) {
       $urlList[] = $url;
