@@ -10,5 +10,13 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "WikiLeaksEmailDump\\": "src/" 
+        }
+    },
+    "require-dev": {
+        "sstalle/php7cc": "^1.1"
+    }
 }
