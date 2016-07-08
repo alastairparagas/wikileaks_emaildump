@@ -17,6 +17,8 @@ class ParallelWebRequester implements WebRequesterContract
   private $urlList;
   private $responses;
   private $requestFired;
+  private $multi_curl_handle;
+  private $curl_references;
   
   /**
   * Constructs ParallelWebRequester
@@ -32,8 +34,10 @@ class ParallelWebRequester implements WebRequesterContract
     }
     
     $this->urlList = $urlList;
-    $this->responses = [];
     $this->requestFired = false;
+    
+    $this->multi_curl_handle = null;
+    $this->curl_references = null;
   }
   
   /**
@@ -41,50 +45,30 @@ class ParallelWebRequester implements WebRequesterContract
   * @param Generator $generator
   */
   public static function fromGenerator(Generator $generator) 
-  {
-    $urlList = [];
-    
-    foreach ($generator() as $url) {
-      $urlList[] = $url;
-    }
-    
-    return new self($urlList);
+  { 
+    return new self(iterator_to_array($generator));
   }
   
   /**
   * Issues out parallelized requests
   * @returns void
   */
-  public function request(): Generator
+  public function request(): void
   {
     $this->requestFired = true;
     
-    $multi_curl_handle = curl_multi_init();
-    $curl_refs = array();
+    $this->multi_curl_handle = curl_multi_init();
+    $this->curl_refs = array();
     
-    // Instantiate cURL instances
+    // Instantiate cURL requests
     foreach ($this->urlList as $index => $url) {
       $curl = curl_init();
       curl_setopt($curl, CURLOPT_URL, $url);
-      curl_setopt($curl, CURLOPT_HEADER, 0);
-      curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($curl, CURLOPT_HEADER, FALSE);
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
       curl_multi_add_handle($multi_curl_handle, $curl);
       $curl_refs[$index] = $curl;
     }
-    
-    // Thread out cURL execution
-    $is_running = 0;
-    do {
-      curl_multi_exec($multi_curl_handle, $is_running);
-    } 
-    while ($is_running > 0);
-    
-    // Obtain response for each cURL instance
-    foreach ($curl_refs as $index => $curl) {
-      $this->responses[$index] = curl_multi_getcontent($curl);
-      curl_multi_remove_handle($multi_curl_handle, $curl);
-    }
-    curl_multi_close($multi_curl_handle);
   }
   
   /**
@@ -92,30 +76,27 @@ class ParallelWebRequester implements WebRequesterContract
   *   to the multiple urls in a threaded-fashion
   * @returns ArrayAccess
   */
-  public function getResponses(): ArrayAccess
+  public function getResponses(): Generator 
   {
     if (!$this->requestFired) {
       throw new LogicException("request() method must be called " . 
                                "first before obtaining responses");
     }
     
-    return new class($this->responses) extends ArrayAccess {
-      private $responses;
-      public function __construct($urlList) {
-        $this->responses = $responses;
+    return function () {
+      // Thread out cURL execution
+      $is_running = 0;
+      do {
+        curl_multi_exec($this->multi_curl_handle, $is_running);
+      } 
+      while ($is_running);
+      
+      // Obtain response for each cURL instance
+      foreach ($this->curl_refs as $index => $curl) {
+        yield curl_multi_getcontent($curl);
+        curl_multi_remove_handle($this->multi_curl_handle, $curl);
       }
-      public function offsetExists($offset) {
-        return array_key_exists($offset, $this->responses);
-      }
-      public function offsetGet($offset) {
-        return $this->responses[$offset];
-      }
-      public function offsetSet($offset, $newVal) {
-        $this->responses[$offset] = $newVal;
-      }
-      public function offsetUnset($offset) {
-        unset($this->responses[$offset]);
-      }
+      curl_multi_close($multi_curl_handle);
     };
   }
     

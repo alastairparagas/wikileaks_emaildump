@@ -22,12 +22,12 @@ interface WebRequesterContract
   /**
   * Fires the request/s
   */
-  public function request();
+  public function request(): void;
   
   /**
   * Obtains the responses from the request/s
   * @returns ArrayAccess A list of index-mapped string responses
   */
-  public function getResponses(): ArrayAccess;
+  public function getResponses(): Generator;
   
 }
