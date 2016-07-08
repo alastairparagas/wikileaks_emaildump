@@ -17,6 +17,7 @@
         }
     },
     "require-dev": {
-        "sstalle/php7cc": "^1.1"
+        "sstalle/php7cc": "^1.1",
+        "codegyre/robo": "^0.7.2"
     }
 }
