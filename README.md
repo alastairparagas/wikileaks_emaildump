@@ -1,4 +1,7 @@
 # WikiLeaks Email Dump
+[![Build Status](https://travis-ci.org/alastairparagas/wikileaks_emaildump.svg?branch=master)](https://travis-ci.org/alastairparagas/wikileaks_emaildump)
+[![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badge/)
 > Obtains, parses and statistically analyzes the recently dumped and available set of emails from Presidential Candidate, Hillary Clinton's email servers (made available on WikiLeaks) - all in a REST-ful JSON API server!
 
 ## Environment Details
