@@ -39,36 +39,49 @@ class RoboFile extends \Robo\Tasks
   {
     $this
       ->taskPHPUnit()
+      ->bootstrap('tests/bootstrap.php')
+      ->files('tests')
       ->run();
   }
   
   public function testWatch() 
   {
+    $runTest = function () {
+      $this->test();
+    };
+    
     $this
       ->taskWatch()
-      ->monitor('index.php', $this->test)
-      ->monitor('composer.json', $this->test)
-      ->monitor('./src', $this->test)
+      ->monitor('index.php', $runTest)
+      ->monitor('composer.json', $runTest)
+      ->monitor('./src', $runTest)
+      ->monitor('./tests', $runTest)
       ->run();
   }
   
-  public function syntaxcheck($loglevel='error') 
+  public function syntaxcheck() 
   {
     $this
-      ->taskExec('./vendor/bin/php7cc')
+      ->taskExec('./vendor/bin/parallel-lint')
       ->arg('./src')
       ->arg('index.php')
       ->arg('RoboFile.php')
-      ->option('level', $loglevel)
+      ->arg('./tests')
       ->run();
   }
   
   public function syntaxcheckWatch() 
   {
+    $runSyntaxCheck = function () {
+      $this->syntaxCheck();
+    };
+    
     $this
       ->taskWatch()
-      ->monitor('index.php', $this->syntaxCheck)
-      ->monitor('./src', $this->syntaxCheck)
+      ->monitor('index.php', $runSyntaxCheck)
+      ->monitor('./src', $runSyntaxCheck)
+      ->monitor('RoboFile.php', $runSyntaxCheck)
+      ->monitor('./tests', $runSyntaxCheck)
       ->run();
   }
   
