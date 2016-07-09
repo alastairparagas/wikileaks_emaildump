@@ -22,7 +22,7 @@ interface WebRequesterContract
   /**
   * Fires the request/s
   */
-  public function request(): void;
+  public function request();
   
   /**
   * Obtains the responses from the request/s
