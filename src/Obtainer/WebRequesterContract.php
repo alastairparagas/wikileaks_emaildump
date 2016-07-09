@@ -2,7 +2,7 @@
 
 namespace WikiLeaksEmailDump\Obtainer;
 
-use \ArrayAccess;
+use \Generator;
 
 /**
 * Contract for anything which fires a Web Request and 
@@ -17,7 +17,7 @@ interface WebRequesterContract
   * @param Closure $generator An exhaustible generator that generates URLs 
   *   to request from
   */
-  public static function fromGenerator(Closure $generator);
+  public static function fromGenerator(Generator $generator);
   
   /**
   * Fires the request/s

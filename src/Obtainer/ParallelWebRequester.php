@@ -64,8 +64,8 @@ class ParallelWebRequester implements WebRequesterContract
     foreach ($this->urlList as $index => $url) {
       $curl = curl_init();
       curl_setopt($curl, CURLOPT_URL, $url);
-      curl_setopt($curl, CURLOPT_HEADER, FALSE);
-      curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+      curl_setopt($curl, CURLOPT_HEADER, false);
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
       curl_multi_add_handle($multi_curl_handle, $curl);
       $curl_refs[$index] = $curl;
     }
