@@ -9,7 +9,7 @@ use \Generator;
 
 /**
 * Fires Parallel Web Requests
-* @package WikiLeaksEmailDump
+* @package WikiLeaksEmailDump\Obtainer
 */
 class ParallelWebRequester implements WebRequesterContract 
 {
@@ -22,7 +22,7 @@ class ParallelWebRequester implements WebRequesterContract
   
   /**
   * Constructs ParallelWebRequester
-  * @param array $urlList String[] of urls to request from
+  * @param array $urlList - String[] of urls to request from
   */
   public function __construct(array $urlList) 
   { 
@@ -74,7 +74,7 @@ class ParallelWebRequester implements WebRequesterContract
   /**
   * Threads out the requests and fires the requests 
   *   to the multiple urls in a threaded-fashion
-  * @returns ArrayAccess
+  * @returns Generator
   */
   public function getResponses(): Generator 
   {
