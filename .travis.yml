@@ -1,0 +1,9 @@
+language: php
+php:
+  - '7.0'
+  - nightly
+before_script:
+  - composer install
+script:
+  - ./vendor/bin/robo test
+  - ./vendor/bin/robo syntaxcheck
