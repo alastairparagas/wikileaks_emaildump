@@ -31,7 +31,8 @@ class HtmlParser implements ParserContract
       throw new InvalidArgumentException("Document cannot be empty.");
     }
     $this->selectors = $selectors;
-    $this->document = DOMDocument::loadHTML($document);
+    $this->document = new DOMDocument(); 
+    $this->document->loadHTML($document);
     $this->documentXPath = new DOMXPath($this->document);
   }
   
