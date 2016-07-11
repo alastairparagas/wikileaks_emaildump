@@ -4,12 +4,13 @@ namespace WikiLeaksEmailDump\Parser;
 
 use \Generator;
 use \DOMDocument;
+use \DOMNode;
 use \DOMXPath;
 use \InvalidArgumentException;
 
 /**
 * Parses an HTML string
-* @package WikiLeaksEmailDump
+* @package WikiLeaksEmailDump\Parser
 */
 class HtmlParser implements ParserContract
 {
@@ -50,27 +51,38 @@ class HtmlParser implements ParserContract
   */
   public function getValues(): Generator
   {
-    $generator = function () {
+    return call_user_func(function () {
+      $asHtmlString = function (DOMNode $domNode): string {
+        return $this->document->saveHTML($domNode);
+      };
+      
       foreach ($this->selectors as $selector) {
         $domNodeList = $this->documentXPath->query($selector);
         
+        // Provided selector didn't get a match. Return an empty
+        //  result set. If we do find a match, turn the obtained
+        //  iterator to an array.
         if ($domNodeList === false) {
           yield array();
           continue;
+        } else {
+          $domNodeList = iterator_to_array($domNodeList);
         }
         
-        // Map over matched values (each selector has a list of matches)
-        //  Remove newlines and trim each string portion
-        yield array_map(function ($domNode) {
-          $domNodeString = $domNode->ownerDocument->saveHTML($domNode);
+        // Map over matched values (each provided selector has 
+        //  a list of matches). Get the innerHtml value. 
+        //  Remove newlines and trim
+        yield array_map(function ($domNode) use ($asHtmlString) {
+          $domNodeString = '';
+          foreach ($domNode->childNodes as $domChildNode) {
+            $domNodeString .= $asHtmlString($domChildNode);
+          }
           return implode('', array_map(function ($domNodeStringPortion) {
             return trim($domNodeStringPortion);
           }, explode(PHP_EOL, $domNodeString)));
-        }, iterator_to_array($domNodeList));
+        }, $domNodeList);
       }
-    };
-    
-    return $generator();
+    });
   }
   
 }

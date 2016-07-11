@@ -55,11 +55,11 @@ class HtmlParserTester extends TestCase
       $results,
       array(
         array(
-          "<div class=\"empire\">Some Value</div>", 
-          "<div class=\"empire\"><span>A span nested value</span></div>"
+          "Some Value", 
+          "<span>A span nested value</span>"
         ),
         array(
-          "<span>A span nested value</span>"
+          "A span nested value"
         ),
         array()
       )
@@ -75,11 +75,11 @@ class HtmlParserTester extends TestCase
       $results,
       array(
         array(
-          "<div class=\"empire\">Some Value</div>", 
-          "<div class=\"empire\"><span>A span nested value</span></div>"
+          "Some Value", 
+          "<span>A span nested value</span>"
         ),
         array(
-          "<span>A span nested value</span>"
+          "A span nested value"
         ),
         array()
       )
