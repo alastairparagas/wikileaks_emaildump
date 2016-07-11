@@ -83,7 +83,7 @@ class ParallelWebRequester implements WebRequesterContract
                                "first before obtaining responses");
     }
     
-    $generator = function () {
+    return call_user_func(function () {
       // Thread out cURL execution
       $is_running = 0;
       do {
@@ -97,9 +97,7 @@ class ParallelWebRequester implements WebRequesterContract
         curl_multi_remove_handle($this->multi_curl_handle, $curl);
       }
       curl_multi_close($this->multi_curl_handle);
-    };
-    
-    return $generator();
+    });
   }
     
 }
